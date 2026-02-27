@@ -1,0 +1,11 @@
+{
+  "type": "module",
+  "dependencies": {
+    "@farcaster/frame-sdk": "^0.0.63",
+    "puppeteer": "^24.10.1",
+    "sharp": "^0.34.2"
+  },
+  "devDependencies": {
+    "vite": "^6.3.5"
+  }
+}

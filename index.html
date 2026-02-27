@@ -1,0 +1,65 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Fifteen</title>
+    <meta name="description" content="Play the classic Fifteen Puzzle on Farcaster" />
+    <!-- Favicon -->
+    <link
+      rel="icon"
+      type="image/png"
+      href="/favicon-96x96.png"
+      sizes="96x96"
+    />
+    <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+    <link rel="shortcut icon" href="/favicon.ico" />
+    <link
+      rel="apple-touch-icon"
+      sizes="180x180"
+      href="/apple-touch-icon.png"
+    />
+    <link rel="manifest" href="/favicon/site.webmanifest" />
+    <!-- OG -->
+    <meta property="og:title" content="Fifteen" />
+    <meta property="og:description" content="Play the classic Fifteen Puzzle on Farcaster" />
+    <meta
+      property="og:image"
+      content="https://fift.netlify.app/og.jpg"
+    />
+    <meta property="og:url" content="https://fift.netlify.app" />
+    <meta property="og:type" content="website" />
+    <meta name="robots" content="index, follow" />
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:title" content="Fifteen" />
+    <meta name="twitter:description" content="Play the classic Fifteen Puzzle on Farcaster" />
+    <meta
+      name="twitter:image"
+      content="https://fift.netlify.app/og.jpg"
+    />
+    <meta name="twitter:site" content="@farcaster" />
+    <!-- Frames -->
+    <meta
+      name="fc:frame"
+      content='{"version":"next","imageUrl":"https://fift.netlify.app/image-url.png","button":{"title":"Play Fifteen!","action":{"type":"launch_frame","name":"Play Fifteen!","url":"https://fift.netlify.app","splashImageUrl":"https://fift.netlify.app/splash.png","splashBackgroundColor":"#1a2a6c"}}}'
+    />
+    <link rel="stylesheet" crossorigin href="/src/styles.css">
+  </head>
+  <body>
+    <div id="app">
+      <div class="container">
+        <h1>Fifteen</h1>
+        <div class="game-info">
+          <div class="moves">Moves: <span id="moves">0</span></div>
+          <div class="timer">Time: <span id="timer">00:00</span></div>
+        </div>
+        <div class="game-board" id="gameBoard"></div>
+        <div class="controls">
+          <button id="newGameBtn">New Game</button>
+          <button id="shuffleBtn">Shuffle</button>
+        </div>
+      </div>
+    </div>
+    <script type="module" crossorigin src="/src/script.js"></script>
+  </body>
+</html> 

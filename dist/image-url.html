@@ -1,0 +1,82 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <style>
+        body {
+            width: 1200px;
+            height: 630px;
+            margin: 0;
+            padding: 0;
+            background: linear-gradient(135deg, #1a2a6c, #b21f1f, #fdbb2d);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+        .container {
+            text-align: center;
+            padding: 40px;
+        }
+        h1 {
+            color: white;
+            font-size: 72px;
+            margin-bottom: 40px;
+            text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.3);
+        }
+        .game-preview {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 10px;
+            background: rgba(255, 255, 255, 0.1);
+            padding: 20px;
+            border-radius: 20px;
+            margin: 0 auto;
+            max-width: 600px;
+        }
+        .tile {
+            aspect-ratio: 1;
+            background: white;
+            border-radius: 10px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            font-size: 36px;
+            font-weight: bold;
+            color: #1a2a6c;
+        }
+        .tile.empty {
+            background: transparent;
+        }
+        .subtitle {
+            color: white;
+            font-size: 36px;
+            margin-top: 40px;
+            text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.3);
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Fifteen</h1>
+        <div class="game-preview">
+            <div class="tile">1</div>
+            <div class="tile">2</div>
+            <div class="tile">3</div>
+            <div class="tile">4</div>
+            <div class="tile">5</div>
+            <div class="tile">6</div>
+            <div class="tile">7</div>
+            <div class="tile">8</div>
+            <div class="tile">9</div>
+            <div class="tile">10</div>
+            <div class="tile">11</div>
+            <div class="tile">12</div>
+            <div class="tile">13</div>
+            <div class="tile">14</div>
+            <div class="tile">15</div>
+            <div class="tile empty"></div>
+        </div>
+        <div class="subtitle">Play the classic puzzle game</div>
+    </div>
+</body>
+</html> 

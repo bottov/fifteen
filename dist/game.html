@@ -1,0 +1,286 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Fifteen - Play</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+        body {
+            background: linear-gradient(135deg, #1a2a6c, #b21f1f, #fdbb2d);
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 20px;
+        }
+        .container {
+            text-align: center;
+            width: 100%;
+            max-width: 400px;
+        }
+        h1 {
+            color: white;
+            font-size: 2rem;
+            margin-bottom: 20px;
+            text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.3);
+        }
+        .game-info {
+            display: flex;
+            justify-content: space-around;
+            margin-bottom: 20px;
+            color: white;
+            font-size: 1rem;
+        }
+        .game-board {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 5px;
+            background: rgba(255, 255, 255, 0.1);
+            padding: 10px;
+            border-radius: 10px;
+            margin: 0 auto;
+        }
+        .tile {
+            aspect-ratio: 1;
+            background: white;
+            border-radius: 5px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            font-size: 1.2rem;
+            font-weight: bold;
+            cursor: pointer;
+            transition: transform 0.2s, background-color 0.2s;
+            user-select: none;
+        }
+        .tile:hover {
+            transform: scale(0.95);
+            background-color: #f0f0f0;
+        }
+        .tile.empty {
+            background: transparent;
+            cursor: default;
+        }
+        .tile.empty:hover {
+            transform: none;
+        }
+        .controls {
+            margin-top: 20px;
+            display: flex;
+            gap: 10px;
+            justify-content: center;
+        }
+        button {
+            padding: 8px 16px;
+            font-size: 0.9rem;
+            border: none;
+            border-radius: 5px;
+            background: rgba(255, 255, 255, 0.9);
+            color: #1a2a6c;
+            cursor: pointer;
+            transition: transform 0.2s, background-color 0.2s;
+        }
+        button:hover {
+            transform: translateY(-2px);
+            background: white;
+        }
+        @keyframes win {
+            0% { transform: scale(1); }
+            50% { transform: scale(1.05); }
+            100% { transform: scale(1); }
+        }
+        .win {
+            animation: win 0.5s ease-in-out;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Fifteen</h1>
+        <div class="game-info">
+            <div class="moves">Moves: <span id="moves">0</span></div>
+            <div class="timer">Time: <span id="timer">00:00</span></div>
+        </div>
+        <div class="game-board" id="gameBoard"></div>
+        <div class="controls">
+            <button id="newGameBtn">New Game</button>
+            <button id="shuffleBtn">Shuffle</button>
+        </div>
+    </div>
+    <script>
+        class PuzzleGame {
+            constructor() {
+                this.board = [];
+                this.size = 4;
+                this.moves = 0;
+                this.timer = 0;
+                this.timerInterval = null;
+                this.isPlaying = false;
+                
+                this.gameBoard = document.getElementById('gameBoard');
+                this.movesDisplay = document.getElementById('moves');
+                this.timerDisplay = document.getElementById('timer');
+                this.newGameBtn = document.getElementById('newGameBtn');
+                this.shuffleBtn = document.getElementById('shuffleBtn');
+                
+                this.initializeBoard();
+                this.setupEventListeners();
+                this.shuffleBoard();
+            }
+            
+            initializeBoard() {
+                this.board = Array.from({length: this.size * this.size}, (_, i) => i + 1);
+                this.board[this.board.length - 1] = 0;
+                this.renderBoard();
+            }
+            
+            renderBoard() {
+                this.gameBoard.innerHTML = '';
+                this.board.forEach((value, index) => {
+                    const tile = document.createElement('div');
+                    tile.className = `tile ${value === 0 ? 'empty' : ''}`;
+                    tile.textContent = value || '';
+                    tile.dataset.index = index;
+                    this.gameBoard.appendChild(tile);
+                });
+            }
+            
+            setupEventListeners() {
+                this.gameBoard.addEventListener('click', (e) => {
+                    const tile = e.target.closest('.tile');
+                    if (!tile || tile.classList.contains('empty')) return;
+                    
+                    const index = parseInt(tile.dataset.index);
+                    if (this.canMove(index)) {
+                        this.moveTile(index);
+                        this.moves++;
+                        this.movesDisplay.textContent = this.moves;
+                        
+                        if (!this.isPlaying) {
+                            this.startTimer();
+                        }
+                        
+                        if (this.checkWin()) {
+                            this.handleWin();
+                        }
+                    }
+                });
+                
+                this.newGameBtn.addEventListener('click', () => this.startNewGame());
+                this.shuffleBtn.addEventListener('click', () => this.shuffleBoard());
+            }
+            
+            canMove(index) {
+                const emptyIndex = this.board.indexOf(0);
+                const row = Math.floor(index / this.size);
+                const col = index % this.size;
+                const emptyRow = Math.floor(emptyIndex / this.size);
+                const emptyCol = emptyIndex % this.size;
+                
+                return (Math.abs(row - emptyRow) === 1 && col === emptyCol) ||
+                       (Math.abs(col - emptyCol) === 1 && row === emptyRow);
+            }
+            
+            moveTile(index) {
+                const emptyIndex = this.board.indexOf(0);
+                [this.board[index], this.board[emptyIndex]] = [this.board[emptyIndex], this.board[index]];
+                this.renderBoard();
+            }
+            
+            shuffleBoard() {
+                for (let i = this.board.length - 1; i > 0; i--) {
+                    const j = Math.floor(Math.random() * (i + 1));
+                    [this.board[i], this.board[j]] = [this.board[j], this.board[i]];
+                }
+                
+                if (!this.isSolvable()) {
+                    this.shuffleBoard();
+                }
+                
+                this.renderBoard();
+                this.moves = 0;
+                this.movesDisplay.textContent = this.moves;
+                this.resetTimer();
+            }
+            
+            isSolvable() {
+                let inversions = 0;
+                const boardWithoutEmpty = this.board.filter(x => x !== 0);
+                
+                for (let i = 0; i < boardWithoutEmpty.length - 1; i++) {
+                    for (let j = i + 1; j < boardWithoutEmpty.length; j++) {
+                        if (boardWithoutEmpty[i] > boardWithoutEmpty[j]) {
+                            inversions++;
+                        }
+                    }
+                }
+                
+                const emptyRow = Math.floor(this.board.indexOf(0) / this.size);
+                return (this.size % 2 === 1) ? (inversions % 2 === 0) : ((inversions + emptyRow) % 2 === 0);
+            }
+            
+            checkWin() {
+                return this.board.every((value, index) => {
+                    if (index === this.board.length - 1) return value === 0;
+                    return value === index + 1;
+                });
+            }
+            
+            handleWin() {
+                this.isPlaying = false;
+                clearInterval(this.timerInterval);
+                this.gameBoard.classList.add('win');
+                setTimeout(() => {
+                    alert(`Congratulations! You solved the puzzle in ${this.moves} moves and ${this.formatTime(this.timer)}!`);
+                    this.gameBoard.classList.remove('win');
+                }, 500);
+            }
+            
+            startTimer() {
+                this.isPlaying = true;
+                this.timer = 0;
+                this.updateTimerDisplay();
+                this.timerInterval = setInterval(() => {
+                    this.timer++;
+                    this.updateTimerDisplay();
+                }, 1000);
+            }
+            
+            resetTimer() {
+                clearInterval(this.timerInterval);
+                this.timer = 0;
+                this.updateTimerDisplay();
+                this.isPlaying = false;
+            }
+            
+            updateTimerDisplay() {
+                this.timerDisplay.textContent = this.formatTime(this.timer);
+            }
+            
+            formatTime(seconds) {
+                const minutes = Math.floor(seconds / 60);
+                const remainingSeconds = seconds % 60;
+                return `${minutes.toString().padStart(2, '0')}:${remainingSeconds.toString().padStart(2, '0')}`;
+            }
+            
+            startNewGame() {
+                this.initializeBoard();
+                this.moves = 0;
+                this.movesDisplay.textContent = this.moves;
+                this.resetTimer();
+            }
+        }
+
+        // Запуск игры после загрузки страницы
+        document.addEventListener('DOMContentLoaded', () => {
+            const game = new PuzzleGame();
+        });
+    </script>
+</body>
+</html> 
