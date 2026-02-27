@@ -2,7 +2,7 @@
 _Simple fifteen game for Farcaster_
 
 ## Links for test:
-https://fifteen.netlify.app  
+https://stagnes.netlify.app  
 https://t.me/stagnes_game_bot
 
 ## Previews
